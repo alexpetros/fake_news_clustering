@@ -1,1 +1,9 @@
+# data dis
 /data
+/pickles
+
+# pickled data
+*.pkl
+
+# combiled pythons files
+*.pyc
