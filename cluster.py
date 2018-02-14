@@ -20,27 +20,29 @@ import pprint
 
 
 
-fn_filepath = './data/fake_news.json'
 
-def buildtopics(num_topics):
+def buildtopics(num_topics, corpus, dictionary):
+    '''
+    using the corpus and dictionary of the 
+    preconditons:
+        num_topics - the number of topics we want to find in the corpus
+        corpus - the group of documents,
+        dictionary -
+    '''
     wordnet_lemmatizer = WordNetLemmatizer()
 
     with open(fn_filepath) as data_file:    
         fake_news = json.load(data_file)
 
-    # print(fake_news[1])
-
-    # prepare dictionary
-    corpus_full, dictionary_full = prepare_dtm(fake_news)
-
     # log and build models
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', 
         level=logging.INFO)
-    model = gensim.models.LdaModel(corpus_full, num_topics=num_topics, 
-        id2word=dictionary_full, passes=20)
+    model = gensim.models.LdaModel(corpus, num_topics=num_topics, 
+        id2word=dictionary, passes=20)
 
     # save stuff!
     joblib.dump(model, 'model.pkl')
+    return model
 
     # pprint.pprint(model.print_topics(num_topics=20, num_words=5))
 
@@ -67,6 +69,32 @@ def prepare_dtm(data):
 
     corpus = [dictionary.doc2bow(text) for text in texts]
     return corpus, dictionary
+
+
+def loadtopics(fn_filepath):
+    model = None
+    corpus_full = None
+    dictionary_full = None
+
+    # attempt to load corpus and dictionary, build if not found
+    try:
+        corpus_full = joblib.load('./pickles/corpus_full.pkl')
+        dictionary_full = joblib.load('./pickles/dictionary_full.pkl')
+    except Exception as e:
+        # print documents in loadings
+        print('pickle not found - building corpus and dictionary')
+        with open(fn_filepath) as data_file:    
+            fake_news = json.load(data_file)
+        corpus_full, dictionary_full = cluster.prepare_dtm(fake_news)
+
+    # attempt to load model, build if not found
+    try:
+        model = joblib.load('./pickles/model.pkl')
+    except FileNotFoundError as e:
+        print('pickle not found - building model')
+        model = cluster.buildtopics(40, corpus_full, dictionary_full)
+
+    return (model, corpus_full, dictionary_full)
 
 
 # run script if main
