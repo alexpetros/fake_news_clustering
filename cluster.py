@@ -27,7 +27,7 @@ def buildtopics(num_topics, corpus, dictionary):
     preconditons:
         num_topics - the number of topics we want to find in the corpus
         corpus - the group of documents,
-        dictionary -
+        dictionary - word dictionary
     '''
     wordnet_lemmatizer = WordNetLemmatizer()
 
@@ -48,12 +48,21 @@ def buildtopics(num_topics, corpus, dictionary):
 
 
 def prepare_dtm(data):
+    '''
+    builds document-text matrix from a list of dictionaries
+    where each dictionary represents an article, and has a 'text' attribute
+    preconditions:
+        data - a list of dictonaries, descrived above
+    postconditions:
+        returns the corpus and dictonary objects 
+
+    '''
     texts = []
     for text in data:
         # clean and tokenize document string (forcing unicode)
 
         text = text['text'].encode('ascii', 'ignore').lower()
-        # if using python 2
+        # if using python 2 - we are, regrettably
         text = text.translate(None, string.digits)
         text = text.translate(None, string.punctuation)
         tokens = nltk.word_tokenize(text)
@@ -71,7 +80,19 @@ def prepare_dtm(data):
     return corpus, dictionary
 
 
-def loadtopics(fn_filepath):
+def loadtopics():
+    ''''
+    attempts to load the pickled model, 
+    and builds neccesary components if they do not exits
+    preconditon:
+        if pickles do exist, they exist in './pickles'
+        fake news file is in './data/fake_news.json'
+    postcondition:
+        returns model, corpus, and dictonary
+    '''
+    fn_filepath = './data/fake_news.json'
+    num_topics = 40
+
     model = None
     corpus_full = None
     dictionary_full = None
@@ -92,7 +113,7 @@ def loadtopics(fn_filepath):
         model = joblib.load('./pickles/model.pkl')
     except FileNotFoundError as e:
         print('pickle not found - building model')
-        model = cluster.buildtopics(40, corpus_full, dictionary_full)
+        model = cluster.buildtopics(num_topics, corpus_full, dictionary_full)
 
     return (model, corpus_full, dictionary_full)
 
