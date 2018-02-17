@@ -9,6 +9,9 @@ Written by Nidhi Rao, Colin Boit, Randy Zhang, and Alex Petros
 #### Requirements
 Requires the `fake_news.json` file, which is too large to upload to github. 
 
+In order to save time, the program will first check for pre-existing `pickles/*.pkl` files, and if the necessary files aren't present, then it will create the model from scratch using `data/fake_news.json`. The program expects those directories to be present, so they have been included in the git even though at the moment they are empty.
+
+#### Build
 To build the files, and run the preliminary sorting, use the following two commands in the project root directory:
 
 `chmod +wrx analyze.py`
@@ -16,6 +19,7 @@ To build the files, and run the preliminary sorting, use the following two comma
 `./analyze.py`
 
 This will build the `.pkl` files if you do not have them, and then print out the articles dataframe. 
+
 
 #### What it does
 Right now we've built two dataframes. The  first is a key where the topic numbers correspond to topic names. Since the algoirthm is not deterministic, it's possible that if you don't use our `.pkl`  file your topics won't match up with ours. However we've left them in the demonstrate the process.
