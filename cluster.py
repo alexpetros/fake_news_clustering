@@ -20,6 +20,19 @@ import pprint
 
 
 
+def getDataFile():
+
+    fn_filepath = './data/fake_news.json'
+    fake_news = None
+
+    try:
+        with open(fn_filepath) as data_file:    
+            fake_news = json.load(data_file)
+    except IOError as e:
+        raise IOError('Fake news json file not found - make sure ./data/fake_news.json exists')
+
+    return fake_news
+
 
 def buildtopics(num_topics, corpus, dictionary):
     '''
@@ -29,10 +42,7 @@ def buildtopics(num_topics, corpus, dictionary):
         corpus - the group of documents,
         dictionary - word dictionary
     '''
-    wordnet_lemmatizer = WordNetLemmatizer()
-
-    with open(fn_filepath) as data_file:    
-        fake_news = json.load(data_file)
+    
 
     # log and build models
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', 
@@ -41,7 +51,7 @@ def buildtopics(num_topics, corpus, dictionary):
         id2word=dictionary, passes=20)
 
     # save stuff!
-    joblib.dump(model, 'model.pkl')
+    joblib.dump(model, 'pickles/model.pkl')
     return model
 
     # pprint.pprint(model.print_topics(num_topics=20, num_words=5))
@@ -77,6 +87,10 @@ def prepare_dtm(data):
     dictionary.filter_n_most_frequent(50)
 
     corpus = [dictionary.doc2bow(text) for text in texts]
+
+    # save and return stuff!
+    joblib.dump(corpus, './pickles/corups.pkl')
+    joblib.dump(dictionary, './pickles/corup.pkl')
     return corpus, dictionary
 
 
@@ -90,32 +104,30 @@ def loadtopics():
     postcondition:
         returns model, corpus, and dictonary
     '''
-    fn_filepath = './data/fake_news.json'
     num_topics = 40
 
     model = None
-    corpus_full = None
-    dictionary_full = None
+    corpus = None
+    dictionary = None
 
     # attempt to load corpus and dictionary, build if not found
     try:
-        corpus_full = joblib.load('./pickles/corpus_full.pkl')
-        dictionary_full = joblib.load('./pickles/dictionary_full.pkl')
+        corpus = joblib.load('./pickles/corpus.pkl')
+        dictionary = joblib.load('./pickles/dictionary.pkl')
     except Exception as e:
         # print documents in loadings
         print('pickle not found - building corpus and dictionary')
-        with open(fn_filepath) as data_file:    
-            fake_news = json.load(data_file)
-        corpus_full, dictionary_full = cluster.prepare_dtm(fake_news)
+        fake_news = getDataFile()
+        corpus, dictionary = prepare_dtm(fake_news)
 
     # attempt to load model, build if not found
     try:
         model = joblib.load('./pickles/model.pkl')
-    except FileNotFoundError as e:
+    except Exception as e:
         print('pickle not found - building model')
-        model = cluster.buildtopics(num_topics, corpus_full, dictionary_full)
+        model = buildtopics(num_topics, corpus, dictionary)
 
-    return (model, corpus_full, dictionary_full)
+    return (model, corpus, dictionary)
 
 
 # run script if main
