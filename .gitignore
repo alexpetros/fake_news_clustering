@@ -1,8 +1,5 @@
-# data dis
-/data
-/pickles
-
-# pickled data
+# data files
+*.json
 *.pkl
 
 # combiled pythons files
