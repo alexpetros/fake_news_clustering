@@ -1,6 +1,5 @@
 # data files
 *.json
-*.pkl
 
 # combiled pythons files
 *.pyc
