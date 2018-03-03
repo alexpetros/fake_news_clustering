@@ -9,16 +9,22 @@ Written by Nidhi Rao, Colin Boit, Randy Zhang, and Alex Petros
 #### Requirements
 Requires the `fake_news.json` file, which is too large to upload to github. 
 
-In order to save time, the program will first check for pre-existing `pickles/*.pkl` files, and if the necessary files aren't present, then it will create the model from scratch using `data/fake_news.json`. The program expects those directories to be present, so they have been included in the git even though at the moment they are empty.
+In order to save time, the program will first check for pre-existing `pickles/*.pkl` files (which I have uploaded), and if the necessary files aren't present, then it will create the model from scratch using `data/fake_news.json`. The program expects those directories to be present, so they have been included in the git even though at the moment they are empty.
 
 #### Build
-To build the files, and run the preliminary sorting, use the following two commands in the project root directory:
+Clone the repo with:
+
+`git clone https://github.com/alexpetros/fake_news_clustering.git`
+
+`cd fake_news_clustering/`
+
+Now you're in the project root director. To build the files and run the preliminary sorting, use the following two commands:
 
 `chmod +wrx analyze.py`
 
 `./analyze.py`
 
-This will build the `.pkl` files if you do not have them, and then print out the articles dataframe. 
+This will build the `.pkl` files if you decided to make your own (requires json file), and then save the artice and topics `.csv` files in the root directory. Shouldn't take more than a few minutes.
 
 
 #### What it does

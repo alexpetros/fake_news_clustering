@@ -1,5 +1,9 @@
 # data files
 *.json
+*.csv
 
-# combiled pythons files
+# combiled project files
 *.pyc
+
+# R stuff you don't need
+.Rproj.user

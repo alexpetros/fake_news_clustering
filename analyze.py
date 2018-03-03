@@ -60,7 +60,8 @@ articles_df['topic1'] = np.asarray(topics[0])
 articles_df['topic2'] = np.asarray(topics[1])
 articles_df['topic3'] = np.asarray(topics[2])
 
-print articles_df
+articles_df.to_csv('./data/fake_news_clustered.csv', encoding = 'utf-8')
+topics_df.to_csv('./data/fake_news_topic_key.csv', encoding = 'utf-8')
 
 
 
